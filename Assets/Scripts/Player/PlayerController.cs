@@ -1,72 +1,116 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 /// <summary>
-/// 플레이어 입력 처리 및 이동 컨트롤러
-/// New Input System 기반으로 키보드/게임패드 동시 지원
-/// Step 6 FSM 구현 시 CharacterController 기반으로 교체 예정
+/// 플레이어 이동 및 FSM 컨트롤러
 /// </summary>
+/// <description>
+/// CharacterController 기반 TPS 이동 구현.
+/// Main Camera forward/right 기준으로 이동 방향 계산.
+/// 플레이어는 이동 방향으로만 회전, 카메라와 독립적으로 동작.
+/// switch 기반 FSM (Phase 3에서 클래스 분리 리팩토링 예정).
+/// </description>
+[RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    // Inspector에서 이동 속도 조절 가능하도록 SerializeField 사용
-    [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private CharacterStatData _statData;
 
-    // Input System 액션 인스턴스 (Generate C# Class로 자동 생성된 클래스)
+    private CharacterController _characterController;
     private PlayerInputActions _input;
-
-    // 매 프레임 입력값을 저장할 변수
     private Vector2 _moveDir;
+    private float _verticalVelocity;
+    private PlayerState _currentState = PlayerState.Idle;
+    private const float Gravity = -9.81f;
 
-    /// <summary>
-    /// 컴포넌트 초기화 - Input 인스턴스 생성
-    /// Start보다 먼저 실행되므로 의존성 초기화에 사용
-    /// </summary>
     void Awake()
     {
+        _characterController = GetComponent<CharacterController>();
         _input = new PlayerInputActions();
+        // 커서 숨기기 + 화면 고정
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     /// <summary>
-    /// 오브젝트 활성화 시 Input 활성화 및 이벤트 구독
-    /// OnDisable과 쌍으로 관리해 메모리 누수 방지
+    /// 한 프레임 대기 후 Input 활성화
+    /// Play 시작 시 로딩 중 마우스 이동이 카메라에 반영되는 문제 방지
     /// </summary>
-    void OnEnable()
+    IEnumerator Start()
     {
+        _input.Player.Disable();
+        yield return null;
         _input.Player.Enable();
-        // Attack은 performed 이벤트로 구독 (버튼을 눌렀을 때 1회 발생)
         _input.Player.Attack.performed += OnAttack;
     }
 
-    /// <summary>
-    /// 오브젝트 비활성화 시 Input 비활성화 및 이벤트 해제
-    /// 이벤트 해제를 먼저 하고 Disable 호출
-    /// </summary>
     void OnDisable()
     {
         _input.Player.Attack.performed -= OnAttack;
         _input.Player.Disable();
     }
 
-    /// <summary>
-    /// 매 프레임 이동 입력 처리
-    /// WASD / 게임패드 왼쪽 스틱 모두 Vector2로 읽힘 (2D Vector Composite)
-    /// Step 6에서 카메라 방향 기준 이동으로 교체 예정 (TPS)
-    /// </summary>
     void Update()
     {
-        _moveDir = _input.Player.Move.ReadValue<Vector2>();
+        HandleGravity();
+        switch (_currentState)
+        {
+            case PlayerState.Idle:
+            case PlayerState.Move:
+                HandleMove();
+                break;
+            case PlayerState.Dead:
+                break;
+        }
+    }
 
-        // 입력의 Y값을 3D 공간의 Z축으로 변환 (3D 기준 앞뒤 이동)
-        Vector3 move = new Vector3(_moveDir.x, 0f, _moveDir.y);
-        transform.Translate(move * _moveSpeed * Time.deltaTime);
+    private void HandleGravity()
+    {
+        if (_characterController.isGrounded)
+            _verticalVelocity = -1f;
+        else
+            _verticalVelocity += Gravity * Time.deltaTime;
     }
 
     /// <summary>
-    /// 공격 입력 콜백 - performed: 버튼이 눌린 순간 1회 호출
-    /// Phase 2에서 실제 공격 로직으로 교체 예정
+    /// TPS 이동 — Main Camera forward/right 기준
     /// </summary>
+    private void HandleMove()
+    {
+        _moveDir = _input.Player.Move.ReadValue<Vector2>();
+
+        // Main Camera Y축 방향 기준으로 이동 방향 계산
+        Transform cam = Camera.main.transform;
+        Vector3 camForward = new Vector3(cam.forward.x, 0f, cam.forward.z).normalized;
+        Vector3 camRight = new Vector3(cam.right.x, 0f, cam.right.z).normalized;
+
+        Vector3 moveVec = camForward * _moveDir.y + camRight * _moveDir.x;
+        moveVec.y = _verticalVelocity;
+
+        _characterController.Move(moveVec * _statData.moveSpeed * Time.deltaTime);
+
+        // 이동 상태 갱신
+        _currentState = new Vector3(_moveDir.x, 0f, _moveDir.y).sqrMagnitude > 0.01f
+            ? PlayerState.Move : PlayerState.Idle;
+
+        // 이동 방향으로 캐릭터 회전
+        if (new Vector3(_moveDir.x, 0f, _moveDir.y).sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(
+                new Vector3(moveVec.x, 0f, moveVec.z));
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, targetRot, Time.deltaTime * 10f);
+        }
+    }
+
     private void OnAttack(InputAction.CallbackContext ctx)
     {
+        if (_currentState == PlayerState.Dead) return;
         Debug.Log("Attack!");
+    }
+
+    public void SetDead()
+    {
+        _currentState = PlayerState.Dead;
     }
 }
