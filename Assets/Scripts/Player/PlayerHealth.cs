@@ -6,22 +6,22 @@
 /// <description>
 /// HP 변경 시 EventBus.PlayerHPChanged() 호출로 UI에 알림.
 /// 직접 HPBarUI를 참조하지 않아 느슨한 결합 유지.
-/// 스탯 데이터는 Step 5에서 ScriptableObject로 교체 예정.
+/// 스탯은 CharacterStatData ScriptableObject에서 참조.
 /// </description>
 public class PlayerHealth : MonoBehaviour
 {
-    // 임시 값 — Step 5에서 CharacterStatData SO로 교체 예정
-    [SerializeField] private float _maxHP = 100f;
+    // Inspector에서 Player_Stat SO 연결
+    [SerializeField] private CharacterStatData _statData;
+
     private float _currentHP;
 
     /// <summary>
-    /// 초기화 - 최대 HP로 설정 후 UI에 알림
+    /// 초기화 - SO에서 maxHP 읽어 설정 후 UI에 알림
     /// </summary>
     void Start()
     {
-        _currentHP = _maxHP;
-        // 초기 HP를 UI에 전달
-        EventBus.PlayerHPChanged(_currentHP, _maxHP);
+        _currentHP = _statData.maxHP;
+        EventBus.PlayerHPChanged(_currentHP, _statData.maxHP);
     }
 
     /// <summary>
@@ -31,8 +31,7 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(float amount)
     {
         _currentHP = Mathf.Max(0f, _currentHP - amount);
-        // HP 변경을 EventBus로 발행 — HPBarUI가 직접 구독해서 처리
-        EventBus.PlayerHPChanged(_currentHP, _maxHP);
+        EventBus.PlayerHPChanged(_currentHP, _statData.maxHP);
 
         if (_currentHP <= 0f)
             Die();
@@ -44,8 +43,8 @@ public class PlayerHealth : MonoBehaviour
     /// <param name="amount">회복량</param>
     public void Heal(float amount)
     {
-        _currentHP = Mathf.Min(_maxHP, _currentHP + amount);
-        EventBus.PlayerHPChanged(_currentHP, _maxHP);
+        _currentHP = Mathf.Min(_statData.maxHP, _currentHP + amount);
+        EventBus.PlayerHPChanged(_currentHP, _statData.maxHP);
     }
 
     /// <summary>
