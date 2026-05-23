@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// 게임 전반적인 상태를 관리하는 매니저
-/// </summary>
-/// <description>
-/// Singleton 패턴 적용. 씬 전환 시에도 유지됨 (DontDestroyOnLoad).
-/// 게임 상태(Playing/Paused/GameOver) 관리 및 모바일 생명주기 처리 담당.
-/// AudioManager는 ServiceLocator로 참조.
-/// </description>
+// =============================================
+// GameManager
+// - 게임 전반 상태 관리 (Playing / Paused / GameOver)
+// - Singleton 패턴 적용, 씬 전환 시에도 유지
+// - OnApplicationPause: 백그라운드 진입 시 자동 세이브 예정 (Phase 4)
+// - OnApplicationFocus: 포커스 복귀 시 BGM 재개 예정 (Phase 1 AudioManager)
+// =============================================
+
 public class GameManager : Singleton<GameManager>
 {
     // 게임 상태 열거형
