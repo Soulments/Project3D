@@ -18,6 +18,9 @@ public class SafeAreaFitter : MonoBehaviour
             ApplySafeArea();
     }
 
+    /// <summary>
+    /// Screen.safeArea 기준으로 앵커 min/max 계산 후 적용
+    /// </summary>
     private void ApplySafeArea()
     {
         Rect safeArea = Screen.safeArea;

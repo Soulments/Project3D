@@ -1,13 +1,5 @@
 ﻿using UnityEngine;
 
-// =============================================
-// GameManager
-// - 게임 전반 상태 관리 (Playing / Paused / GameOver)
-// - Singleton 패턴 적용, 씬 전환 시에도 유지
-// - OnApplicationPause: 백그라운드 진입 시 자동 세이브 예정 (Phase 4)
-// - OnApplicationFocus: 포커스 복귀 시 BGM 재개 예정 (Phase 1 AudioManager)
-// =============================================
-
 public class GameManager : Singleton<GameManager>
 {
     // 게임 상태 열거형
@@ -16,7 +8,7 @@ public class GameManager : Singleton<GameManager>
     public GameState CurrentState { get; private set; }
 
     /// <summary>
-    /// 초기화 - 게임 상태를 Playing으로 설정
+    /// 초기화 — 게임 상태를 Playing으로 설정
     /// </summary>
     protected override void Awake()
     {
@@ -28,6 +20,7 @@ public class GameManager : Singleton<GameManager>
     /// <summary>
     /// 게임 상태 변경
     /// </summary>
+    /// <param name="newState">변경할 게임 상태</param>
     public void SetState(GameState newState)
     {
         CurrentState = newState;
@@ -35,12 +28,9 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// 앱이 백그라운드로 진입하거나 복귀할 때 호출
+    /// 앱 백그라운드 진입/복귀 시 호출
     /// </summary>
-    /// <description>
-    /// pause == true  : 백그라운드 진입 → 자동 세이브 연결 예정 (Phase 4 SaveSystem 구현 후)
-    /// pause == false : 포그라운드 복귀 → 필요 시 상태 복원
-    /// </description>
+    /// <param name="pause">true: 백그라운드 진입 / false: 포그라운드 복귀</param>
     private void OnApplicationPause(bool pause)
     {
         if (pause)
@@ -51,12 +41,9 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// 앱 포커스 변경 시 호출 (다른 앱 전환 등)
+    /// 앱 포커스 변경 시 호출
     /// </summary>
-    /// <description>
-    /// focus == true  : 포커스 복귀 → BGM 재개 연결 예정 (Phase 1 AudioManager 구현 후)
-    /// focus == false : 포커스 소실 → BGM 일시정지
-    /// </description>
+    /// <param name="focus">true: 포커스 복귀 / false: 포커스 소실</param>
     private void OnApplicationFocus(bool focus)
     {
         if (focus)

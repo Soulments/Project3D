@@ -2,18 +2,10 @@
 using UnityEngine.InputSystem;
 using System.Collections;
 
-/// <summary>
-/// 플레이어 이동 및 FSM 컨트롤러
-/// </summary>
-/// <description>
-/// CharacterController 기반 TPS 이동 구현.
-/// Main Camera forward/right 기준으로 이동 방향 계산.
-/// 플레이어는 이동 방향으로만 회전, 카메라와 독립적으로 동작.
-/// switch 기반 FSM (Phase 3에서 클래스 분리 리팩토링 예정).
-/// </description>
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    // Inspector에서 Player_Stat SO 연결
     [SerializeField] private CharacterStatData _statData;
 
     private CharacterController _characterController;
@@ -64,6 +56,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 중력 처리 — isGrounded 시 소량 음수로 고정해 바닥 감지 안정화
+    /// </summary>
     private void HandleGravity()
     {
         if (_characterController.isGrounded)
@@ -73,7 +68,8 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// TPS 이동 — Main Camera forward/right 기준
+    /// TPS 이동 — Main Camera forward/right 기준으로 이동 방향 계산
+    /// 플레이어는 이동 방향으로만 회전, 카메라와 독립적으로 동작
     /// </summary>
     private void HandleMove()
     {
@@ -103,12 +99,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 공격 입력 콜백 — Phase 2에서 SkillHandler 호출로 교체 예정
+    /// </summary>
     private void OnAttack(InputAction.CallbackContext ctx)
     {
         if (_currentState == PlayerState.Dead) return;
         Debug.Log("Attack!");
     }
 
+    /// <summary>
+    /// 사망 상태로 전환 — EventBus OnPlayerDied 구독으로 호출
+    /// </summary>
     public void SetDead()
     {
         _currentState = PlayerState.Dead;

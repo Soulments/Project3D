@@ -1,13 +1,5 @@
 ﻿using UnityEngine;
 
-// =============================================
-// Singleton
-// - 제네릭 MonoBehaviour Singleton 베이스 클래스
-// - GameManager, AudioManager 등에서 상속해서 사용
-// - DontDestroyOnLoad로 씬 전환 시에도 유지
-// - Singleton은 2~3개로 제한, 나머지는 ServiceLocator 사용
-// =============================================
-
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     private static T _instance;

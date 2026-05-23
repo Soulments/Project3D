@@ -1,10 +1,7 @@
 ﻿/// <summary>
 /// 플레이어 FSM 상태 열거형
+/// Phase 3에서 각 상태를 클래스로 분리하는 리팩토링 예정
 /// </summary>
-/// <description>
-/// Phase 3에서 각 상태를 클래스로 분리하는 리팩토링 예정.
-/// 현재는 switch 기반 FSM으로 구현.
-/// </description>
 public enum PlayerState
 {
     Idle,    // 정지 상태

@@ -2,15 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// 서비스 등록 및 조회를 담당하는 정적 로케이터
-/// </summary>
-/// <description>
-/// Singleton 남용 방지를 위한 의존성 관리 패턴.
-/// UIManager, SceneLoader, SaveSystem 등 전역 접근이 필요하지만
-/// Singleton까지는 불필요한 서비스를 등록해서 사용.
-/// FindObjectOfType, GameObject.Find 대체 목적.
-/// </description>
 public static class ServiceLocator
 {
     // 타입을 키로 사용하는 서비스 딕셔너리
@@ -29,7 +20,7 @@ public static class ServiceLocator
     }
 
     /// <summary>
-    /// 등록된 서비스 조회
+    /// 등록된 서비스 조회 — 미등록 시 에러 로그 출력
     /// </summary>
     /// <param name="service">조회된 서비스 인스턴스</param>
     /// <returns>등록 여부</returns>
@@ -46,7 +37,7 @@ public static class ServiceLocator
     }
 
     /// <summary>
-    /// 씬 전환 시 서비스 초기화 (씬 종속 서비스 정리용)
+    /// 씬 전환 시 서비스 초기화 — 씬 종속 서비스 정리용
     /// </summary>
     public static void Clear() => _services.Clear();
 }
