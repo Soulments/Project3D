@@ -22,7 +22,6 @@ public class PlayerController : MonoBehaviour
     // Animator Parameter 해시 — string 비교보다 성능 효율적
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int JumpHash = Animator.StringToHash("Jump");
-    private static readonly int AttackHash = Animator.StringToHash("Attack");
     private static readonly int HitHash = Animator.StringToHash("Hit");
     private static readonly int IsDeadHash = Animator.StringToHash("IsDead");
     private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
@@ -45,7 +44,6 @@ public class PlayerController : MonoBehaviour
         _input.Player.Disable();
         yield return null;
         _input.Player.Enable();
-        _input.Player.Attack.performed += OnAttack;
         _input.Player.Jump.performed += OnJump;
         _input.Player.Sprint.performed += OnSprintToggle;
         _animator?.SetBool(IsRunModeHash, _isRunMode);
@@ -53,7 +51,6 @@ public class PlayerController : MonoBehaviour
 
     void OnDisable()
     {
-        _input.Player.Attack.performed -= OnAttack;
         _input.Player.Jump.performed -= OnJump;
         _input.Player.Sprint.performed -= OnSprintToggle;
         _input.Player.Disable();
@@ -152,15 +149,6 @@ public class PlayerController : MonoBehaviour
         _verticalVelocity = _jumpForce;
         _currentState = PlayerState.Jump;
         _animator?.SetTrigger(JumpHash);
-    }
-
-    /// <summary>
-    /// 공격 입력 콜백 — Phase 2에서 SkillHandler 호출로 교체 예정
-    /// </summary>
-    private void OnAttack(InputAction.CallbackContext ctx)
-    {
-        if (_currentState == PlayerState.Dead) return;
-        _animator?.SetTrigger(AttackHash);
     }
 
     /// <summary>

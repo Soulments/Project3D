@@ -45,4 +45,13 @@ public static class EventBus
     /// <summary>공격 히트 이벤트 발행</summary>
     public static void HitLanded()
         => OnHitLanded?.Invoke();
+
+    // ── 스킬 관련 이벤트 ─────────────────────────────────
+
+    /// <summary>스킬 쿨타임 변경 (스킬 인덱스, 총 쿨타임, 경과 시간)</summary>
+    public static event Action<int, float, float> OnSkillCooldownChanged;
+
+    /// <summary>스킬 쿨타임 변경 이벤트 발행</summary>
+    public static void SkillCooldownChanged(int skillIndex, float total, float elapsed)
+        => OnSkillCooldownChanged?.Invoke(skillIndex, total, elapsed);
 }
