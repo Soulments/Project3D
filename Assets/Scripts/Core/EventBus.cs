@@ -19,7 +19,8 @@ public static class EventBus
     // ── 전투 이벤트 ──────────────────────────────────────
 
     /// <summary>공격 히트 — 히트스탑 / 카메라 쉐이크 트리거용 (Phase 2)</summary>
-    public static event Action OnHitLanded;
+    public static event Action<Vector3> OnHitLanded;
+    public static void HitLanded(Vector3 hitPosition) => OnHitLanded?.Invoke(hitPosition);
 
     // ── 발행 메서드 ──────────────────────────────────────
 
@@ -41,10 +42,6 @@ public static class EventBus
     /// <param name="enemy">사망한 적의 GameObject</param>
     public static void EnemyDied(GameObject enemy)
         => OnEnemyDied?.Invoke(enemy);
-
-    /// <summary>공격 히트 이벤트 발행</summary>
-    public static void HitLanded()
-        => OnHitLanded?.Invoke();
 
     // ── 스킬 관련 이벤트 ─────────────────────────────────
 

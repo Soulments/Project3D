@@ -22,7 +22,8 @@ public class SkillHandler : MonoBehaviour
     /// </summary>
     IEnumerator Start()
     {
-        _basicAttack = new BasicAttackCommand(_animator, _statData);
+        // transform을 ownerTransform으로 전달
+        _basicAttack = new BasicAttackCommand(_animator, _statData, transform);
         _skill1 = new Skill1Command(_animator, _statData);
         _skill2 = new Skill2Command(_animator, _statData);
         _skill3 = new Skill3Command(_animator, _statData);
