@@ -12,6 +12,7 @@ public class SkillHandler : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private CharacterStatData _statData;
     [SerializeField] private SkillSequencer _sequencer;
+    [SerializeField] private HitBox _hitBox;
 
     private PlayerInputActions _input;
     private ISkillCommand _basicAttack;
@@ -25,7 +26,7 @@ public class SkillHandler : MonoBehaviour
     IEnumerator Start()
     {
         // transform을 ownerTransform으로 전달
-        _basicAttack = new BasicAttackCommand(_animator, _statData, transform);
+        _basicAttack = new BasicAttackCommand(_animator, _statData, transform, _hitBox);
         _skill1 = new Skill1Command(_animator, _statData, 1);
         _skill2 = new Skill2Command(_animator, _statData, 2);
         _skill3 = new Skill3Command(_animator, _statData, 3);
