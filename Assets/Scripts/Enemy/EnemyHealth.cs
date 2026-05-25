@@ -26,7 +26,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         if (!IsAlive) return;
 
-        _currentHP -= amount;
+        _currentHP = Mathf.Max(_currentHP - amount, 0f);
         Debug.Log($"{gameObject.name} 피격 — 남은 HP: {_currentHP}");
 
         if (_currentHP <= 0f)
