@@ -1,6 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
+/// <summary>SkillSequencer가 발행하는 콤보 타입</summary>
+public enum ComboType { Skill1To2, Skill2To3 }
+
 public static class EventBus
 {
     // ── 플레이어 관련 이벤트 ──────────────────────────────
@@ -51,4 +54,12 @@ public static class EventBus
     /// <summary>스킬 쿨타임 변경 이벤트 발행</summary>
     public static void SkillCooldownChanged(int skillIndex, float total, float elapsed)
         => OnSkillCooldownChanged?.Invoke(skillIndex, total, elapsed);
+
+    public static event Action<ComboType> OnComboTriggered;
+
+    /// <summary>
+    /// 유효한 스킬 콤보 시퀀스 감지 시 발행
+    /// </summary>
+    public static void ComboTriggered(ComboType type)
+        => OnComboTriggered?.Invoke(type);
 }

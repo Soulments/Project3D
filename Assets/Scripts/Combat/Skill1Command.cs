@@ -1,25 +1,29 @@
-﻿using UnityEngine;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using System.Threading;
+using UnityEngine;
 
 /// <summary>
 /// 스킬 1 커맨드 — E 키
 /// UniTask 기반 쿨타임 관리
-/// Phase 2 Step 2에서 실제 효과 구현 예정
 /// </summary>
 public class Skill1Command : ISkillCommand
 {
     private readonly Animator _animator;
     private readonly CharacterStatData _statData;
+    private readonly int _skillIndex;
     private static readonly int AttackHash = Animator.StringToHash("Attack");
 
     private bool _isReady = true;
     private CancellationTokenSource _cts;
 
-    public Skill1Command(Animator animator, CharacterStatData statData)
+    /// <summary>
+    /// <param name="skillIndex">EventBus 쿨타임 이벤트에 사용할 스킬 인덱스</param>
+    /// </summary>
+    public Skill1Command(Animator animator, CharacterStatData statData, int skillIndex)
     {
         _animator = animator;
         _statData = statData;
+        _skillIndex = skillIndex;
     }
 
     public bool CanExecute() => _isReady;
@@ -37,20 +41,21 @@ public class Skill1Command : ISkillCommand
     private async UniTaskVoid StartCooldown()
     {
         _isReady = false;
-        EventBus.SkillCooldownChanged(0, _statData.attackCooldown, 0f);
+        float cooldown = _statData.attackCooldown;
+        EventBus.SkillCooldownChanged(_skillIndex, cooldown, 0f);
 
         _cts = new CancellationTokenSource();
         float elapsed = 0f;
 
-        while (elapsed < _statData.attackCooldown)
+        while (elapsed < cooldown)
         {
             elapsed += Time.deltaTime;
-            EventBus.SkillCooldownChanged(0, _statData.attackCooldown, elapsed);
+            EventBus.SkillCooldownChanged(_skillIndex, cooldown, elapsed);
             await UniTask.Yield(_cts.Token);
         }
 
         _isReady = true;
-        EventBus.SkillCooldownChanged(0, _statData.attackCooldown, _statData.attackCooldown);
+        EventBus.SkillCooldownChanged(_skillIndex, cooldown, cooldown);
     }
 
     public void Dispose() => _cts?.Cancel();

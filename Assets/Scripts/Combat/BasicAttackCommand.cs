@@ -28,4 +28,7 @@ public class BasicAttackCommand : ISkillCommand
         // 임시 — Step 4 히트박스 구현 후 HitBox에서 호출로 교체 예정
         EventBus.HitLanded(_ownerTransform.position + _ownerTransform.forward);
     }
+
+    /// <summary>BasicAttack은 CTS가 없으므로 빈 구현.</summary>
+    public void Dispose() { }
 }

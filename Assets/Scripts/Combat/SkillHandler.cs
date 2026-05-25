@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 /// <summary>
 /// 스킬 실행 관리 컴포넌트 — Command Pattern
@@ -10,6 +11,7 @@ public class SkillHandler : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private CharacterStatData _statData;
+    [SerializeField] private SkillSequencer _sequencer;
 
     private PlayerInputActions _input;
     private ISkillCommand _basicAttack;
@@ -24,35 +26,37 @@ public class SkillHandler : MonoBehaviour
     {
         // transform을 ownerTransform으로 전달
         _basicAttack = new BasicAttackCommand(_animator, _statData, transform);
-        _skill1 = new Skill1Command(_animator, _statData);
-        _skill2 = new Skill2Command(_animator, _statData);
-        _skill3 = new Skill3Command(_animator, _statData);
+        _skill1 = new Skill1Command(_animator, _statData, 1);
+        _skill2 = new Skill2Command(_animator, _statData, 2);
+        _skill3 = new Skill3Command(_animator, _statData, 3);
 
         _input = new PlayerInputActions();
         _input.Player.Disable();
         yield return null;
         _input.Player.Enable();
 
-        _input.Player.Attack.performed += ctx => TryExecute(_basicAttack);
-        _input.Player.Skill1.performed += ctx => TryExecute(_skill1);
-        _input.Player.Skill2.performed += ctx => TryExecute(_skill2);
-        _input.Player.Skill3.performed += ctx => TryExecute(_skill3);
+        _input.Player.Attack.performed += ctx => TryExecute(_basicAttack, 0);
+        _input.Player.Skill1.performed += ctx => TryExecute(_skill1, 1);
+        _input.Player.Skill2.performed += ctx => TryExecute(_skill2, 2);
+        _input.Player.Skill3.performed += ctx => TryExecute(_skill3, 3);
     }
 
     void OnDisable()
     {
         _input?.Player.Disable();
-        (_skill1 as Skill1Command)?.Dispose();
-        (_skill2 as Skill2Command)?.Dispose();
-        (_skill3 as Skill3Command)?.Dispose();
+        _basicAttack?.Dispose();
+        _skill1?.Dispose();
+        _skill2?.Dispose();
+        _skill3?.Dispose();
     }
 
     /// <summary>
-    /// CanExecute 확인 후 스킬 실행
+    /// CanExecute 확인 후 스킬 실행 및 시퀀서에 알림
     /// </summary>
-    private void TryExecute(ISkillCommand command)
+    private void TryExecute(ISkillCommand command, int index)
     {
-        if (command.CanExecute())
-            command.Execute();
+        if (!command.CanExecute()) return;
+        command.Execute();
+        _sequencer.OnSkillExecuted(index);
     }
 }
