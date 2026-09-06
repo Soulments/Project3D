@@ -120,12 +120,11 @@ public class PlayerController : MonoBehaviour
 
     /// <summary>
     /// Root Motion 이동에 중력/점프 수직 속도를 합산해 CharacterController에 전달
-    /// Apply Root Motion이 켜져 있을 때 Unity가 자동 호출
+    /// Model에 부착된 AnimatorMoveRelay가 이 메서드를 호출
     /// </summary>
-    private void OnAnimatorMove()
+    public void OnAnimatorMove(Animator sourceAnimator)
     {
-        // Root Motion의 수평 이동 + 수직 속도(중력/점프) 합산
-        Vector3 deltaPos = _animator.deltaPosition;
+        Vector3 deltaPos = sourceAnimator.deltaPosition;
         deltaPos.y = _verticalVelocity * Time.deltaTime;
         _characterController.Move(deltaPos);
     }
