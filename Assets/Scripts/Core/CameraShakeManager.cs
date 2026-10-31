@@ -8,7 +8,8 @@ using Unity.Cinemachine;
 public class CameraShakeManager : MonoBehaviour
 {
     [SerializeField] private CinemachineImpulseSource _impulseSource;
-    [SerializeField] private float _impulseForce = 0.5f;
+    // Impulse 속도(m)가 그대로 카메라 변위가 되므로 0.5는 50cm 흔들림 — 0.05~0.1 권장
+    [SerializeField] private float _impulseForce = 0.05f;
 
     private void OnEnable()
         => EventBus.OnHitLanded += OnHitLanded;

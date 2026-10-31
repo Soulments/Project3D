@@ -1590,7 +1590,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraShakeManager
   _impulseSource: {fileID: 1110399673}
-  _impulseForce: 0.5
+  _impulseForce: 0.05
 --- !u!114 &876498295
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour
 
     /// <summary>
     /// 이동 방향 계산 + Animator 파라미터 갱신
-    /// 실제 이동은 OnAnimatorMove()의 Root Motion이 담당
+    /// 실제 이동은 ApplyRootMotion()의 Root Motion이 담당
     /// </summary>
     private void HandleMove()
     {
@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
     /// Root Motion 이동에 중력/점프 수직 속도를 합산해 CharacterController에 전달
     /// Model에 부착된 AnimatorMoveRelay가 이 메서드를 호출
     /// </summary>
-    public void OnAnimatorMove(Animator sourceAnimator)
+    public void ApplyRootMotion(Animator sourceAnimator)
     {
         Vector3 deltaPos = sourceAnimator.deltaPosition;
         deltaPos.y = _verticalVelocity * Time.deltaTime;
