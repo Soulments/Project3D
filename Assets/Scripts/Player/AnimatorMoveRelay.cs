@@ -20,5 +20,5 @@ public class AnimatorMoveRelay : MonoBehaviour
     /// Apply Root Motion이 켜져 있을 때 Unity가 이 오브젝트에서 자동 호출
     /// </summary>
     private void OnAnimatorMove()
-        => _playerController.OnAnimatorMove(_animator);
+        => _playerController.ApplyRootMotion(_animator);
 }
