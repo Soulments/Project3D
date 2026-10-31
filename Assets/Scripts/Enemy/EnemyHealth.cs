@@ -14,6 +14,9 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     private float _currentHP;
 
+    /// <summary>피격 후에도 생존했을 때 발행 — 적 FSM의 Hit 상태 전환용</summary>
+    public event System.Action Damaged;
+
     public bool IsAlive => _currentHP > 0f;
 
     private void Awake()
@@ -37,6 +40,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
         // Unity 오브젝트는 ?. 가 fake-null을 통과하므로 명시적으로 검사 (Animator 없는 적 대응)
         if (_animator != null) _animator.SetTrigger(HitHash);
+        Damaged?.Invoke();
     }
 
     /// <summary>

@@ -10,6 +10,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     /// <summary>현재 생존 여부 — IDamageable 구현.</summary>
     public bool IsAlive => _currentHP > 0f;
 
+    /// <summary>적 AI가 FindObjectOfType 없이 플레이어를 찾도록 ServiceLocator에 등록</summary>
+    void Awake()
+        => ServiceLocator.Register(this);
+
     void Start()
     {
         _currentHP = _statData.maxHP;
