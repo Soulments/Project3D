@@ -35,7 +35,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable
             return;
         }
 
-        _animator?.SetTrigger(HitHash);
+        // Unity 오브젝트는 ?. 가 fake-null을 통과하므로 명시적으로 검사 (Animator 없는 적 대응)
+        if (_animator != null) _animator.SetTrigger(HitHash);
     }
 
     /// <summary>
@@ -44,7 +45,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private void Die()
     {
         _currentHP = 0f;
-        _animator?.SetTrigger(DeadHash);
+        if (_animator != null) _animator.SetTrigger(DeadHash);
         EventBus.EnemyDied(gameObject);
         // 오브젝트 비활성화는 Phase 3 적 AI 완성 후 Pool로 반환
         gameObject.SetActive(false);
