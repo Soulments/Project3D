@@ -107,3 +107,25 @@
   kinematic `Rigidbody`를 추가하자 같은 공격이 HP 1.00 → 0.70으로 들어갔다.
 - 플레이어를 `Player` 레이어로 옮긴 변경이 원인인지 의심해 확인했다: `Default` 레이어에 `Rigidbody` 없이도 똑같이 빗나갔으므로 **레이어 변경과 무관**하다.
 - 이전 Phase에서 이 공격이 맞았다고 기록된 경위는 확인하지 못했다.
+
+## 3. 씬 루프 통합 검증 (Phase 4 Step 5)
+
+`TitleScene`에서 Play를 시작해 아래 순서로 진행하고, 씬이 바뀔 때마다 상태를 스냅샷으로 기록했다
+(Unity 6000.3.13f1 Editor, 버튼은 `onClick.Invoke()`로 눌렀다 — 실제 마우스 입력은 시뮬레이션하지 않았다).
+
+1. 타이틀 → 시작 → 던전 → 보스 처치 → 결과(VICTORY) → 타이틀
+2. 타이틀 → 시작 → 던전 → 플레이어 사망 → 결과(DEFEAT) → 재도전 → 던전
+3. 던전에서 히트스탑(`timeScale` 0) 도중 타이틀로 전환 → 시작 → 던전
+
+| 점검 | 결과 (수정 후) |
+| --- | --- |
+| 던전 진입 4회 | 매번 정상, 콘솔 오류 0 |
+| 결과 값 | VICTORY / 처치 1(보스 포함) / 사망 0, DEFEAT / 처치 0 / 누적 사망 1 |
+| 이벤트 구독 수 (`OnEnemyDied`, `OnBossDefeated`, `OnPlayerDied`, `OnHitLanded`, `OnBossPhaseChanged`, `OnPlayerHPChanged`) | 던전 진입마다 8 / 1 / 2 / 3 / 2 / 1로 동일, 타이틀·결과에서는 모두 0 |
+| ServiceLocator | 진입마다 `HitEffectPool`, `PlayerHealth`, `ProjectilePool` 재등록, 죽은 참조 없음, 영속 서비스(`SceneLoader`, `GameSession`)는 유지 |
+| Singleton | `GameManager` 1개 유지 |
+| `timeScale` | 히트스탑 중(0)에 전환해도 타이틀에서 1 |
+| 커서 | 던전 Locked, 타이틀/결과 None |
+
+수정 전에는 결과 씬에 `OnHitLanded`/`OnBossPhaseChanged` 구독이 2개씩 남았고, 던전 재진입 후 `CameraShakeManager`에서
+`NullReferenceException`이 났으며, 보스 처치 시 처치 수가 0으로 표시됐다 (원인과 수정은 `docs/decisions.md`).

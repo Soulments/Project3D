@@ -2062,8 +2062,6 @@ GameObject:
   m_Component:
   - component: {fileID: 876498293}
   - component: {fileID: 876498292}
-  - component: {fileID: 876498295}
-  - component: {fileID: 876498294}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2098,36 +2096,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &876498294
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 876498291}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 271b1bf13ff96564aa60c1502b6ef924, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraShakeManager
-  _impulseSource: {fileID: 1110399673}
-  _impulseForce: 0.05
-  _phaseChangeForce: 0.15
---- !u!114 &876498295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 876498291}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11d11a5deee77ba47b235d4f110e99c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HitStopManager
-  _stopDuration: 0.08
-  _stopTimeScale: 0
-  _phaseChangeStopDuration: 0.25
 --- !u!1 &910584580
 GameObject:
   m_ObjectHideFlags: 0
@@ -2415,6 +2383,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 995098279}
   m_CullTransparentMesh: 1
+--- !u!1 &1025333377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1025333379}
+  - component: {fileID: 1025333378}
+  m_Layer: 0
+  m_Name: DungeonRunController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1025333378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1025333377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bacecb97ea083748971e2694f761fa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonRunController
+  _endDelaySeconds: 2.5
+--- !u!4 &1025333379
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1025333377}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1042155965
 GameObject:
   m_ObjectHideFlags: 0
@@ -3337,6 +3350,69 @@ RectTransform:
   m_AnchoredPosition: {x: -100, y: 40}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 0}
+--- !u!1 &1303328929
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1303328932}
+  - component: {fileID: 1303328931}
+  - component: {fileID: 1303328930}
+  m_Layer: 0
+  m_Name: CombatFeedback
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1303328930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303328929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271b1bf13ff96564aa60c1502b6ef924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraShakeManager
+  _impulseSource: {fileID: 1110399673}
+  _impulseForce: 0.05
+  _phaseChangeForce: 0.15
+--- !u!114 &1303328931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303328929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11d11a5deee77ba47b235d4f110e99c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitStopManager
+  _stopDuration: 0.08
+  _stopTimeScale: 0
+  _phaseChangeStopDuration: 0.25
+--- !u!4 &1303328932
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303328929}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1357901640 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9175088765034030054, guid: 4cce7f22b9aa9464c82ee7293c2eef4a, type: 3}
@@ -4522,3 +4598,5 @@ SceneRoots:
   - {fileID: 1700822663}
   - {fileID: 118448845}
   - {fileID: 1854714703}
+  - {fileID: 1025333379}
+  - {fileID: 1303328932}
