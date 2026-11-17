@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Unity.Profiling;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -24,6 +25,7 @@ public class EnemyController : MonoBehaviour
     private const float AnimatorSpeedDamp = 0.1f;
 
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
+    private static readonly ProfilerMarker DetectionMarker = new ProfilerMarker("Enemy.Detection");
 
     private NavMeshAgent _agent;
     private EnemyHealth _health;
@@ -203,7 +205,7 @@ public class EnemyController : MonoBehaviour
 
     private void UpdateIdle()
     {
-        if (IsTargetWithin(_aiData.detectionRange))
+        if (DetectsTarget())
         {
             ChangeState(EnemyState.Chase);
             return;
@@ -216,7 +218,7 @@ public class EnemyController : MonoBehaviour
 
     private void UpdatePatrol()
     {
-        if (IsTargetWithin(_aiData.detectionRange))
+        if (DetectsTarget())
         {
             ChangeState(EnemyState.Chase);
             return;
@@ -346,6 +348,13 @@ public class EnemyController : MonoBehaviour
     }
 
     // ── 헬퍼 / 이벤트 ────────────────────────────────────
+
+    /// <summary>플레이어 탐지 판정 — 프로파일러 마커로 비용을 측정한다 (docs/measurements.md)</summary>
+    private bool DetectsTarget()
+    {
+        using (DetectionMarker.Auto())
+            return IsTargetWithin(_aiData.detectionRange);
+    }
 
     /// <summary>XZ 평면 거리 비교 — sqrMagnitude로 루트 연산 생략</summary>
     private bool IsTargetWithin(float range)

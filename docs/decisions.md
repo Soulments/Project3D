@@ -23,3 +23,14 @@
   씬 소속 서비스(PlayerHealth, HitEffectPool, ProjectilePool)가 OnDestroy에서 해제해 씬 재진입 시 죽은 참조를 막는다.
 - **GameScene의 플레이어/카메라/UI/매니저를 Dungeon_01로 합쳤다.**
   씬이 둘로 나뉘어 있으면 "입장 → 처치 → 보스" 검증과 Phase 4 씬 흐름을 만들 수 없다.
+
+## 2026-11-17 — Phase 3 Step 4: 적 탐지 비용 측정
+
+- **기준을 측정 전에 먼저 커밋했다** (30마리 0.5 ms / 100마리 2.0 ms 이상이면 병목). 수치를 본 뒤 기준을 맞추지 않으려는 장치.
+- **결과: 병목이 아니라 QuadTree를 채택하지 않았다.** 100마리에서 현재 방식 0.062 ms, OverlapSphere 0.187 ms (기준의 3% / 9%).
+  상세 수치·한계는 `docs/measurements.md`.
+- 계획서는 `Physics.OverlapSphere`를 베이스라인으로 가정했지만 현재 구현은 제곱거리 비교다.
+  그래서 **두 방식을 같은 조건에서 모두 측정**해 "더 싼 쪽이 이미 쓰이고 있다"는 것까지 확인했다.
+- 측정 중 **플레이어가 `Player` 레이어가 아니라 `Default` 레이어**에 있는 것을 발견해 옮겼다 (Phase 2 "Physics Layer 분리"의 누락).
+  재귀로 바꾸다 `PlayerAttack` 레이어의 `WeaponHitBox`까지 바뀐 것은 다시 되돌렸다.
+- 이 측정으로 **다음 병목 후보**가 나왔다: 적 100마리에서 FPS 260 → 125인데 탐지는 0.06 ms뿐 → Phase 5 Profiler 사례 후보.
