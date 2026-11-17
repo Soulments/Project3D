@@ -14,6 +14,7 @@ public class SkillHandler : MonoBehaviour
     [SerializeField] private SkillSequencer _sequencer;
     [SerializeField] private HitBox _hitBox;
 
+    private PlayerHealth _health;
     private PlayerInputActions _input;
     private ISkillCommand _basicAttack;
     private ISkillCommand _skill1;
@@ -25,6 +26,7 @@ public class SkillHandler : MonoBehaviour
     /// </summary>
     IEnumerator Start()
     {
+        _health = GetComponent<PlayerHealth>();
         // transform을 ownerTransform으로 전달
         _basicAttack = new BasicAttackCommand(_animator, _statData, transform, _hitBox);
         _skill1 = new Skill1Command(_animator, _statData, 1);
@@ -56,6 +58,7 @@ public class SkillHandler : MonoBehaviour
     /// </summary>
     private void TryExecute(ISkillCommand command, int index)
     {
+        if (_health != null && !_health.IsAlive) return; // 사망 후 공격 불가
         if (!command.CanExecute()) return;
         command.Execute();
         _sequencer.OnSkillExecuted(index);
