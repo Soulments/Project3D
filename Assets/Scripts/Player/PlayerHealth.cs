@@ -14,6 +14,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     void Awake()
         => ServiceLocator.Register(this);
 
+    /// <summary>씬 재진입 시 죽은 참조가 남지 않도록 해제</summary>
+    void OnDestroy()
+        => ServiceLocator.Unregister(this);
+
     void Start()
     {
         _currentHP = _statData.maxHP;

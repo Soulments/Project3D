@@ -31,6 +31,9 @@ public class EnemyAIData : ScriptableObject
 
     // ── 기타 ──────────────────────────────────────────────
 
+    /// <summary>피격 시 경직(공격 중단) 여부 — 보스처럼 경직하지 않는 적은 끈다</summary>
+    public bool staggerable = true;
+
     /// <summary>피격 경직 시간 (초)</summary>
     public float hitStunDuration = 0.4f;
 

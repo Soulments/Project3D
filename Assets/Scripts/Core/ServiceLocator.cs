@@ -37,6 +37,16 @@ public static class ServiceLocator
     }
 
     /// <summary>
+    /// 서비스 등록 해제 — 등록된 인스턴스가 service와 같을 때만 제거
+    /// 씬 소속 서비스는 OnDestroy에서 호출해 씬 재진입 시 죽은 참조가 남지 않게 한다
+    /// </summary>
+    public static void Unregister<T>(T service)
+    {
+        if (_services.TryGetValue(typeof(T), out var registered) && ReferenceEquals(registered, service))
+            _services.Remove(typeof(T));
+    }
+
+    /// <summary>
     /// 씬 전환 시 서비스 초기화 — 씬 종속 서비스 정리용
     /// </summary>
     public static void Clear() => _services.Clear();
