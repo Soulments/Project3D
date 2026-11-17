@@ -58,10 +58,16 @@ public class EnemyController : MonoBehaviour
     protected PlayerHealth Target => _target;
     protected bool HasTarget => _target != null && _target.IsAlive;
 
+    /// <summary>공격 행동이 준비됐는지 — 패턴을 직접 관리하는 보스는 오버라이드</summary>
+    protected virtual bool HasBehavior => _behavior != null;
+
+    /// <summary>이동 속도 — 보스처럼 페이즈에 따라 달라지는 경우 오버라이드</summary>
+    protected virtual float MoveSpeed => _statData.moveSpeed;
+
     /// <summary>공격 시작 거리 — 보스처럼 상황에 따라 달라지는 경우 오버라이드</summary>
     protected virtual float AttackRange => _behavior.AttackRange;
 
-    void Awake()
+    protected virtual void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _health = GetComponent<EnemyHealth>();
@@ -72,13 +78,13 @@ public class EnemyController : MonoBehaviour
         if (_behavior == null && _behaviorData != null) _behavior = _behaviorData;
     }
 
-    void OnEnable()
+    protected virtual void OnEnable()
     {
         EventBus.OnEnemyDied += OnEnemyDied;
         _health.Damaged += OnDamaged;
     }
 
-    void OnDisable()
+    protected virtual void OnDisable()
     {
         EventBus.OnEnemyDied -= OnEnemyDied;
         _health.Damaged -= OnDamaged;
@@ -106,7 +112,7 @@ public class EnemyController : MonoBehaviour
         _homePosition = transform.position;
         ServiceLocator.TryGet(out _target);
 
-        if (_behavior == null)
+        if (!HasBehavior)
         {
             Debug.LogError($"{name}: IEnemyBehavior가 주입되지 않음 — AI 비활성화", this);
             enabled = false;
@@ -171,7 +177,7 @@ public class EnemyController : MonoBehaviour
 
             case EnemyState.Patrol:
                 _agent.stoppingDistance = 0f;
-                _agent.speed = _statData.moveSpeed * _aiData.patrolSpeedMultiplier;
+                _agent.speed = MoveSpeed * _aiData.patrolSpeedMultiplier;
                 if (TryGetPatrolPoint(out Vector3 point))
                 {
                     _agent.isStopped = false;
@@ -187,7 +193,7 @@ public class EnemyController : MonoBehaviour
             case EnemyState.Chase:
                 // 사거리 안쪽에서 멈추도록 여유를 둔다
                 _agent.stoppingDistance = AttackRange * 0.8f;
-                _agent.speed = _statData.moveSpeed;
+                _agent.speed = MoveSpeed;
                 _agent.isStopped = false;
                 _repathTimer = 0f;
                 break;

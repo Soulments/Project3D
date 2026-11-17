@@ -11,22 +11,34 @@ public class HitStopManager : MonoBehaviour
     [SerializeField] private float _stopDuration = 0.08f;
     [SerializeField] private float _stopTimeScale = 0f;
 
+    // 보스 페이즈 전환은 일반 타격보다 길게 멈춰 "전환 순간"을 강조한다
+    [SerializeField] private float _phaseChangeStopDuration = 0.25f;
+
     private CancellationTokenSource _cts;
 
     private void OnEnable()
-        => EventBus.OnHitLanded += OnHitLanded;
+    {
+        EventBus.OnHitLanded += OnHitLanded;
+        EventBus.OnBossPhaseChanged += OnBossPhaseChanged;
+    }
 
     private void OnDisable()
-        => EventBus.OnHitLanded -= OnHitLanded;
+    {
+        EventBus.OnHitLanded -= OnHitLanded;
+        EventBus.OnBossPhaseChanged -= OnBossPhaseChanged;
+    }
 
     private void OnHitLanded(Vector3 hitPosition)
-        => StartHitStopAsync().Forget();
+        => StartHitStopAsync(_stopDuration).Forget();
+
+    private void OnBossPhaseChanged(int phase)
+        => StartHitStopAsync(_phaseChangeStopDuration).Forget();
 
     /// <summary>
     /// Time.timeScale을 순간 정지 후 UniTask로 복귀
     /// 이전 히트스탑 진행 중이면 취소 후 재시작
     /// </summary>
-    private async UniTaskVoid StartHitStopAsync()
+    private async UniTaskVoid StartHitStopAsync(float duration)
     {
         _cts?.Cancel();
         _cts?.Dispose();
@@ -35,7 +47,7 @@ public class HitStopManager : MonoBehaviour
         Time.timeScale = _stopTimeScale;
 
         await UniTask.Delay(
-            (int)(_stopDuration * 1000),
+            (int)(duration * 1000),
             ignoreTimeScale: true,
             cancellationToken: _cts.Token
         );

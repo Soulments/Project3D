@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd6b4765526d6f443aa8342261082ca3, type: 3}
+  m_Name: Boss_Data
+  m_EditorClassIdentifier: Assembly-CSharp::BossData
+  phases:
+  - enterHpRatio: 1
+    sequence:
+    - {fileID: 11400000, guid: 04fe635f95fe129459d8955b26e5f221, type: 2}
+    - {fileID: 11400000, guid: 04fe635f95fe129459d8955b26e5f221, type: 2}
+    sequenceGap: 0.4
+    moveSpeedMultiplier: 1
+  - enterHpRatio: 0.5
+    sequence:
+    - {fileID: 11400000, guid: 04fe635f95fe129459d8955b26e5f221, type: 2}
+    - {fileID: 11400000, guid: 2c3c47ef58cbd4e4986d063e3540a71d, type: 2}
+    - {fileID: 11400000, guid: 04fe635f95fe129459d8955b26e5f221, type: 2}
+    sequenceGap: 0.3
+    moveSpeedMultiplier: 1.3
+  chainRangeMargin: 1

@@ -34,3 +34,22 @@
 - 측정 중 **플레이어가 `Player` 레이어가 아니라 `Default` 레이어**에 있는 것을 발견해 옮겼다 (Phase 2 "Physics Layer 분리"의 누락).
   재귀로 바꾸다 `PlayerAttack` 레이어의 `WeaponHitBox`까지 바뀐 것은 다시 되돌렸다.
 - 이 측정으로 **다음 병목 후보**가 나왔다: 적 100마리에서 FPS 260 → 125인데 탐지는 0.06 ms뿐 → Phase 5 Profiler 사례 후보.
+
+## 2026-11-17 — Phase 3 Step 5: 보스 몬스터
+
+- **보스는 `EnemyController`의 서브클래스(`BossController`)다.** FSM(Idle/Chase/Attack/Hit/Dead)은 그대로 쓰고,
+  변하는 부분만 `virtual` 확장 지점(`RunBehaviorAsync`, `AttackRange`, `MoveSpeed`, `HasBehavior`)으로 열었다.
+  보스 전용 상태 머신을 따로 만들면 순찰/추격/사망 처리를 중복해서 짜게 된다.
+- **페이즈 구성은 `BossData` SO로 분리했다.** 임계값, 패턴 목록, 간격, 이동 속도 배율을 코드 수정 없이 조정한다.
+  패턴 하나하나는 근접/원거리와 같은 `EnemyBehaviorData`라서 일반 적 패턴을 그대로 재사용한다.
+- **패턴 체이닝은 UniTask `await` 순차 실행이다.** 취소 토큰이 이어져 있어 사망 시 체인 전체가 즉시 중단된다.
+  대상이 닿지 않는 패턴은 건너뛴다 → 멀리 있으면 범위 공격, 가까이 있으면 근접 패턴이 나간다.
+- **보스는 경직하지 않는다 (`staggerable = false`).** 경직하면 패턴 체인이 끊겨 보스가 플레이어 연타에 무력해진다.
+  피격 이벤트는 그대로 발행되어 페이즈 판정에만 쓰인다.
+- **페이즈 전환 연출은 기존 시스템을 재사용했다.** `EventBus.OnBossPhaseChanged`를 `HitStopManager`(0.25s)와
+  `CameraShakeManager`(힘 0.15)가 구독한다 — 매니저는 보스를 모르고 이벤트만 안다.
+  측정: 전환 순간 `timeScale = 0`, 카메라 변위 0.20 m (일반 타격 0.067 m의 약 3배).
+- **충격파는 `AreaBehaviorData`로 만들었다.** 선딜 동안 바닥 범위 원이 차오르고, 타격 순간 `HitLanded`를 발행해 쉐이크/히트스탑을 재사용한다.
+- **구현한 것:** 2페이즈 (HP 50% 이하에서 충격파 추가 + 이동 속도 ×1.3). 데이터 기반이라 비용이 거의 들지 않아 같이 했다.
+- **씬 배치:** 잡몹 5(근접 3 + 원거리 2)를 방 중간에, 보스를 북쪽 끝에 두어 "전진 → 잡몹 → 보스" 흐름을 만들었다.
+  `SpawnType.Boss`와 `BossSpawn` 마커를 추가했다.
