@@ -28,6 +28,12 @@ flowchart LR
     R -->|BACK TO TITLE| T
 ```
 
+### 스크린샷
+
+| 적 공격 선딜 경고 | 보스 충격파 선딜 | 모바일 온스크린 컨트롤 |
+|---|---|---|
+| ![적 공격 선딜 경고](docs/images/enemy-windup-telegraph.png) | ![보스 충격파 선딜](docs/images/boss-shockwave-telegraph.png) | ![모바일 온스크린 컨트롤](docs/images/mobile-controls.png) |
+
 ---
 
 ## 🏗️ 아키텍처
