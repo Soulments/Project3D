@@ -251,3 +251,19 @@
   수정 후 1초에 47.9° 회전(마우스와 비슷한 체감 속도).
 - 처음 배치에서 `JMP` 버튼이 기존 스킬 쿨타임 아이콘과 겹쳐 오른쪽 컨트롤을 위로 올렸다.
 - **한계:** 실제 터치 기기에서 확인하지 못했다. 멀티터치(이동하면서 공격) 동작, 터치 영역 크기, 손가락에 가려지는 정도는 미확인이다.
+
+## 8. 빌드 결과 (APK / WebGL)
+
+2026-11-23, Unity 6000.3.13f1, `unity command "build run"`으로 빌드. 빌드 출력은 `Builds/`(`.gitignore` 대상)에 있고 저장소에는 포함하지 않는다.
+
+| 플랫폼 | 결과 | 빌드 시간 | 크기 | 비고 |
+| --- | --- | --- | --- | --- |
+| Android (IL2CPP, ARM64, minSdk 25) | Succeeded | 10분 8초 | APK 41.6 MB | 경고 19. 보고서에 `Subtarget property is not available for the platform (Android)` 오류 1건이 찍혔지만 결과는 Succeeded |
+| WebGL (압축 Disabled) | Succeeded | 11분 6초 | 72 MB (zip 21.8 MB) | itch.io에 올릴 때 `index.html`이 zip 루트에 오도록 묶음 |
+
+- APK 점검: `AndroidManifest.xml`과 `lib/arm64-v8a/`의 `libil2cpp.so`, `libunity.so`, `libgame.so`가 들어 있음을 확인했다.
+- **둘 다 실행해 보지 못했다.** 이 환경에는 Android 기기와 `adb`가 없고, WebGL은 브라우저에서 띄워 보지 못했다. 따라서 "실기기에서 플레이된다"는 아직 주장할 수 없고
+  실기기 Profiler 수치도 없다. 확인 순서: ① APK를 기기에 설치해 타이틀 → 던전 → 결과 루프와 터치 컨트롤 확인, ② 같은 조건에서 Profiler 연결, ③ WebGL은 로컬 서버로 띄워 로드 확인.
+- 안드로이드 패키지 이름은 템플릿 기본값(`com.UnityTechnologies.com.unity.template.urpblank`)이다. 스토어/배포용이라면 바꿔야 한다.
+- 빌드 부작용으로 URP 설정 에셋 4개, `ProjectSettings.asset`(배칭, preloadedAssets), `UnityConnectSettings`(`m_Enabled` 0 → 1)가 자동으로 바뀌었고,
+  의도한 변경이 아니라서 되돌렸다 (활성 빌드 타깃도 Windows로 복구). 빌드 후에는 `git status`로 이런 부산물을 꼭 확인한다.
