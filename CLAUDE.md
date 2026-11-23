@@ -3,13 +3,13 @@
 3인칭 싱글 액션 RPG. 던전을 돌파해 보스를 처치하면 클리어. Unity 6000.3.13f1 · URP · C#.
 계획과 체크리스트는 Notion "Unity 액션 RPG 포트폴리오 개발 계획 (개선판)"이 기준이다.
 
-## 현재 진행 상태 (2026-11-17)
+## 현재 진행 상태 (2026-11-23)
 
 - Phase 1·2·3·4 구현 완료. 남은 것은 Phase 5(최적화·문서) — Profiler 병목 1건 개선, Pool Before/After 수치, README 다이어그램, PDF.
 - 플레이 루프: `TitleScene` → `Dungeon_01`(잡몹 5 + 보스) → `ResultScene` → 타이틀. Build Settings 순서 그대로.
 - 아직 없는 것: 스킬 1~3의 서로 다른 효과/콤보 보너스(지금은 같은 공격 트리거 + 로그), 플레이어 피격 리액션,
   AudioManager/SaveSystem, 한글 폰트(UI는 영문), 플레이 영상. `GameScene.unity`는 `Dungeon_01`에 합쳐져 더 이상 쓰지 않는다.
-- 브랜치는 `feature/*`를 쌓아 올리는 중이고 `develop` 병합은 보류 상태다 (사용자 지시).
+- 2026-11-23에 Phase 3~4 작업(`feature/enemy-behavior-strategy` ~ `feature/outgame-loop`)을 `develop`에 병합했다. 원격 푸시는 아직 하지 않았다.
 
 ## 구조
 
