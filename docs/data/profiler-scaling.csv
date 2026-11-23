@@ -1,0 +1,49 @@
+phase,enemies,metric,kind,mean
+before,50,FPS,fps,136.5
+before,50,Main Thread,ms,7.1560
+before,50,Shadows.DrawSRPBatcher,ms,0.7141
+before,50,MeshSkinning.CalcMatrices,ms,0.4457
+before,50,MeshSkinning.SkinOnGPU,ms,0.5291
+before,50,Animators.Update,ms,0.8640
+before,50,GC Allocated In Frame,count,10745.2
+before,50,Batches Count,count,872.6
+before,50,Draw Calls Count,count,873.1
+before,50,Triangles Count,count,3128067.2
+before,50,SetPass Calls Count,count,32.0
+before,50,Visible Skinned Meshes Count,count,204.0
+before,100,FPS,fps,93.8
+before,100,Main Thread,ms,10.4864
+before,100,Shadows.DrawSRPBatcher,ms,1.2774
+before,100,MeshSkinning.CalcMatrices,ms,0.9929
+before,100,MeshSkinning.SkinOnGPU,ms,1.1013
+before,100,Animators.Update,ms,1.6450
+before,100,GC Allocated In Frame,count,10604.2
+before,100,Batches Count,count,1690.0
+before,100,Draw Calls Count,count,1705.2
+before,100,Triangles Count,count,6335447.3
+before,100,SetPass Calls Count,count,34.0
+before,100,Visible Skinned Meshes Count,count,404.0
+after,50,FPS,fps,158.3
+after,50,Main Thread,ms,6.0111
+after,50,Shadows.DrawSRPBatcher,ms,0.3434
+after,50,MeshSkinning.CalcMatrices,ms,0.1562
+after,50,MeshSkinning.SkinOnGPU,ms,0.1970
+after,50,Animators.Update,ms,0.8108
+after,50,GC Allocated In Frame,count,10599.8
+after,50,Batches Count,count,288.8
+after,50,Draw Calls Count,count,289.4
+after,50,Triangles Count,count,3261754.8
+after,50,SetPass Calls Count,count,32.0
+after,50,Visible Skinned Meshes Count,count,58.0
+after,100,FPS,fps,122.1
+after,100,Main Thread,ms,7.9953
+after,100,Shadows.DrawSRPBatcher,ms,0.4747
+after,100,MeshSkinning.CalcMatrices,ms,0.2842
+after,100,MeshSkinning.SkinOnGPU,ms,0.3360
+after,100,Animators.Update,ms,1.4150
+after,100,GC Allocated In Frame,count,10601.7
+after,100,Batches Count,count,501.8
+after,100,Draw Calls Count,count,502.9
+after,100,Triangles Count,count,6460117.4
+after,100,SetPass Calls Count,count,32.0
+after,100,Visible Skinned Meshes Count,count,108.0

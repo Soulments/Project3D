@@ -1,0 +1,5 @@
+round,model,N,fps,frameMsMean,frameMsP95,drawCalls,batches,trisK,mainThreadMs,animatorsMs,shadowsMs,skinGpuMs
+1,legacy,100,118.5,8.45,12.94,1419,1400,5367,8.39,1.269,1.120,0.860
+2,merged,100,151.9,6.58,8.17,404,402,4952,6.54,1.128,0.447,0.254
+3,legacy,100,130.1,7.69,10.68,1447,1422,5437,7.64,1.177,1.089,0.784
+4,merged,100,141.8,7.05,10.37,412,409,5058,7.01,1.191,0.471,0.272
