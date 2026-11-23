@@ -1,0 +1,9 @@
+target,method,round,spawns,gc_alloc_kb,gc_gen0,spawn_cpu_us_per_frame,frame_ms_mean,frame_ms_p95,frame_ms_max,fps
+HitEffect,Instantiate/Destroy,1,4800,12400,0,1303.7,9.059,12.913,26.793,110
+HitEffect,ObjectPool,1,4800,6538,0,125.1,5.190,7.601,12.546,193
+HitEffect,Instantiate/Destroy,2,4800,11558,0,1277.2,8.598,11.709,39.591,116
+HitEffect,ObjectPool,2,4800,6586,0,144.0,6.182,9.449,22.645,162
+EnemyProjectile,Instantiate/Destroy,1,4800,11632,0,554.9,8.054,12.477,38.711,124
+EnemyProjectile,ObjectPool,1,4800,6599,0,329.6,6.326,10.052,22.835,158
+EnemyProjectile,Instantiate/Destroy,2,4800,11660,0,556.3,8.076,11.814,27.409,124
+EnemyProjectile,ObjectPool,2,4800,6551,0,288.4,5.270,8.190,27.104,190
