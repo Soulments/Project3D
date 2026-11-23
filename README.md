@@ -34,9 +34,10 @@
 Assets/
 ├── Core/         # GameManager, EventBus, ServiceLocator
 ├── Player/       # FSM, InputHandler, SkillHandler
-├── Enemy/        # AI FSM, NavMesh, QuadTree (Phase 3)
+├── Enemy/        # AI FSM, NavMesh, Strategy 행동, 보스 페이즈
 ├── Combat/       # Command Pattern 스킬, HitBox, ObjectPool
-├── UI/           # MVP 패턴 (Phase 4), SafeAreaFitter
+├── Flow/         # SceneLoader, GameSession, 던전 진행 관리
+├── UI/           # 타이틀/결과 화면, HP/쿨타임 UI, SafeAreaFitter
 └── Data/         # ScriptableObject 스탯 데이터
 ```
 
@@ -44,12 +45,12 @@ Assets/
 
 | 패턴 | 적용 위치 | 이유 |
 |---|---|---|
-| Singleton | GameManager, AudioManager (최대 2~3개) | 전역 접근 필요한 최소 시스템만 제한 적용 |
-| Service Locator | UIManager, SceneLoader, SaveSystem | Singleton 남용 방지, 의존성 역전 |
+| Singleton | GameManager (1개) | 전역 접근이 꼭 필요한 최소 시스템만 제한 적용 |
+| Service Locator | SceneLoader, GameSession, PlayerHealth, 이펙트/투사체 풀 | Singleton 남용 방지, 씬 소속 서비스는 OnDestroy에서 해제 |
 | Observer (EventBus) | HP 변경, 사망, 스킬 쿨타임 등 | 컴포넌트 간 직접 참조 제거 |
 | Command | 기본공격, 스킬 1~3 | 스킬 확장/조합 시 코드 수정 최소화 |
 | State (FSM) | 플레이어, 적 AI | 상태별 행동 명확히 분리 |
-| Strategy | 적 AI 행동 (Phase 3) | 적 종류별 AI 교체 가능 구조 |
+| Strategy | 적 공격 행동 (근접/원거리/범위/보스 패턴) | SO로 주입해 코드 수정 없이 적 종류 교체, 선딜→타격→후딜 골격 고정 |
 | Object Pool | 투사체, 이펙트 | Instantiate/Destroy 제거 |
 
 ---
@@ -76,7 +77,7 @@ public interface ISkillCommand
 // 직접 참조 없이 이벤트 기반 통신
 EventBus.OnPlayerHpChanged += HPBarUI.UpdateHP;
 ```
-- `FindObjectOfType`, `GameObject.Find` 완전 제거
+- 게임 로직에서 `FindObjectOfType`/`GameObject.Find` 제거 (Singleton의 지연 조회만 예외)
 - OnEnable/OnDisable에서 구독/해제로 메모리 누수 방지
 
 ### Object Pool
@@ -108,9 +109,11 @@ EventBus.OnPlayerHpChanged += HPBarUI.UpdateHP;
 |---|---|---|
 | Phase 1 | 코어 아키텍처 (Singleton, EventBus, FSM, SO) | ✅ 완료 |
 | Phase 2 | 전투/스킬 시스템 (Command, ObjectPool, UniTask) | ✅ 완료 |
-| Phase 3 | 적 AI + 던전 (NavMesh, QuadTree, 보스) | 🔄 진행 중 |
-| Phase 4 | UI / 씬 흐름 (MVP 리팩토링, 씬 3개) | 🔄 예정 |
-| Phase 5 | 최적화 (LOD, GPU Instancing, Before/After 수치화) | 🔄 예정 |
+| Phase 3 | 적 AI + 던전 (NavMesh, Strategy 행동, 보스 2페이즈, 탐지 비용 측정) | ✅ 완료 |
+| Phase 4 | 아웃게임 최소 루프 (타이틀 → 던전 → 결과, SceneLoader) | ✅ 완료 |
+| Phase 5 | 최적화·마무리 (Profiler 병목 1건, Pool 수치, 문서) | 🔄 예정 |
+
+설계 결정은 [`docs/decisions.md`](docs/decisions.md), 측정 수치는 [`docs/measurements.md`](docs/measurements.md)에 기록한다.
 
 ---
 
@@ -120,13 +123,12 @@ EventBus.OnPlayerHpChanged += HPBarUI.UpdateHP;
 - **Cinemachine 3.x**
 - **New Input System**
 - **UniTask**
-- **ProBuilder** (Phase 3~)
+- **NavMesh (AI Navigation)**
 
 ---
 
 ## 📈 향후 추가 예정
 
-- [ ] QuadTree 기반 적 탐지 최적화 (Before/After 수치화)
-- [ ] LOD Group + GPU Instancing (Draw Call Before/After 수치화)
-- [ ] 패링 시스템
-- [ ] Photon Fusion 2 멀티플레이어
+- [x] 적 탐지 비용 측정 — 병목이 아니라 QuadTree 미채택 (100마리에서 0.06 ms, [근거](docs/measurements.md))
+- [ ] Profiler 병목 1건 측정 후 개선, Object Pool Before/After 수치 정리
+- [ ] 패링 시스템 (v2.0 — 적 공격 선딜 구간에 판정을 붙이도록 설계해 둠)

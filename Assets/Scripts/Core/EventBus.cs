@@ -19,6 +19,12 @@ public static class EventBus
     /// <summary>적 사망 — 사망한 적의 GameObject 전달</summary>
     public static event Action<GameObject> OnEnemyDied;
 
+    /// <summary>보스 페이즈 전환 — 새 페이즈 인덱스(0부터). 히트스탑/카메라 쉐이크 연출 트리거</summary>
+    public static event Action<int> OnBossPhaseChanged;
+
+    /// <summary>보스 처치 — 던전 클리어 판정용</summary>
+    public static event Action OnBossDefeated;
+
     // ── 전투 이벤트 ──────────────────────────────────────
 
     /// <summary>공격 히트 — 히트스탑 / 카메라 쉐이크 트리거용 (Phase 2)</summary>
@@ -45,6 +51,14 @@ public static class EventBus
     /// <param name="enemy">사망한 적의 GameObject</param>
     public static void EnemyDied(GameObject enemy)
         => OnEnemyDied?.Invoke(enemy);
+
+    /// <summary>보스 페이즈 전환 이벤트 발행</summary>
+    public static void BossPhaseChanged(int phase)
+        => OnBossPhaseChanged?.Invoke(phase);
+
+    /// <summary>보스 처치 이벤트 발행</summary>
+    public static void BossDefeated()
+        => OnBossDefeated?.Invoke();
 
     // ── 스킬 관련 이벤트 ─────────────────────────────────
 

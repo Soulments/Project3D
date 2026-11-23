@@ -49,8 +49,12 @@ public class PlayerController : MonoBehaviour
         _animator?.SetBool(IsRunModeHash, _isRunMode);
     }
 
+    void OnEnable()
+        => EventBus.OnPlayerDied += SetDead;
+
     void OnDisable()
     {
+        EventBus.OnPlayerDied -= SetDead;
         _input.Player.Jump.performed -= OnJump;
         _input.Player.Sprint.performed -= OnSprintToggle;
         _input.Player.Disable();

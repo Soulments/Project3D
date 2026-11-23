@@ -18,6 +18,8 @@ public class HitEffectPool : MonoBehaviour
         ServiceLocator.Register<HitEffectPool>(this);
     }
 
+    void OnDestroy() => ServiceLocator.Unregister(this);
+
     void OnEnable() => EventBus.OnHitLanded += OnHitLanded;
     void OnDisable() => EventBus.OnHitLanded -= OnHitLanded;
 
